@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  // 4. Contact/Quote Form Client-Side Validation & Modal Output
+  // 4. Contact/Quote Form Client-Side Validation & AJAX Submission
   const quoteForm = document.getElementById("quoteForm");
   const successModal = document.getElementById("successModal");
   const closeModalBtn = document.getElementById("closeModal");
@@ -114,16 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const fullName = document.getElementById("fullName");
   const emailAddr = document.getElementById("emailAddr");
   const phoneNum = document.getElementById("phoneNum");
-  const frequency = document.getElementById("frequency");
-  const message = document.getElementById("message");
 
   // Error messages container mapping
   const formGroups = {
     name: { el: fullName, parent: fullName.closest(".form-group") },
-    email: { el: emailAddr, parent: emailAddr.closest(".form-group") },
     phone: { el: phoneNum, parent: phoneNum.closest(".form-group") },
-    frequency: { el: frequency, parent: frequency.closest(".form-group") },
-    message: { el: message, parent: message.closest(".form-group") }
+    email: { el: emailAddr, parent: emailAddr.closest(".form-group") }
   };
 
   // Helper validation functions
@@ -189,18 +185,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (isFormValid) {
-      // Mock submit action - clear inputs and display premium overlay
-      quoteForm.reset();
-      
-      // Clear success visual states
-      Object.keys(formGroups).forEach(key => {
-        formGroups[key].parent.classList.remove("success");
-      });
+      // AJAX submission to Netlify Forms
+      const formData = new FormData(quoteForm);
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString()
+      })
+      .then(() => {
+        quoteForm.reset();
+        
+        // Clear success visual states
+        Object.keys(formGroups).forEach(key => {
+          formGroups[key].parent.classList.remove("success");
+        });
 
-      // Show success modal
-      successModal.classList.add("active");
-      successModal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden"; // disable background scrolling
+        // Show success modal
+        successModal.classList.add("active");
+        successModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden"; // disable background scrolling
+      })
+      .catch(error => {
+        console.error("Netlify form submission failed:", error);
+      });
     }
   });
 
