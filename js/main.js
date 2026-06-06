@@ -114,12 +114,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const fullName = document.getElementById("fullName");
   const emailAddr = document.getElementById("emailAddr");
   const phoneNum = document.getElementById("phoneNum");
+  const message = document.getElementById("message");
 
   // Error messages container mapping
   const formGroups = {
     name: { el: fullName, parent: fullName.closest(".form-group") },
     phone: { el: phoneNum, parent: phoneNum.closest(".form-group") },
-    email: { el: emailAddr, parent: emailAddr.closest(".form-group") }
+    email: { el: emailAddr, parent: emailAddr.closest(".form-group") },
+    message: { el: message, parent: message.closest(".form-group") }
   };
 
   // Helper validation functions
